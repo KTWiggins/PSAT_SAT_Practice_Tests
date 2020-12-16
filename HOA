@@ -1,0 +1,48 @@
+--Part I: Creating the HOA file with questions in columns
+--Original File and Output File in Drive Folder at https://drive.google.com/drive/folders/1GgmMNWL0FYvI2vDSgpxgEX1A3gACYIsP?usp=sharing
+
+SELECT *
+INTO HOA_SVVSD_2020
+FROM
+(
+    SELECT [Last],
+		[First],
+		[assessment_name],
+           [Username],
+           [Date],
+		  [point],
+           [question]
+    FROM Benchmark
+) 
+AS SourceTable PIVOT(AVG(Point) FOR [Question] IN([1],
+  [2],
+  [3],
+  [4],
+  [5],
+	[6],
+[7],
+[8],
+[9],
+[10],
+[11],
+[12],
+[13],
+[14],
+[15]
+)) AS PivotTable
+Where assessment_name LIKE 'Heart%'
+AND Date > '08-01-2020'
+Order by Username
+;
+
+--PART II: Pulling HOA only for upload and matching to LASID for ID
+  -- LASID/SASID/ Username in same google drive as above (Shared Drive > Assessment > 2020 > Benchmarks)
+
+SELECT *
+From HOA_SVVSD_2020 AS h
+Left JOIN (
+	SELECT I.LASID,
+	I.Username
+	From IDs_Username_2021 I
+) AS I
+On h.Username = I.Username;
